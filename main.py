@@ -1,106 +1,51 @@
-import tkinter as tk 
+import tkinter as tk
+from tkinter import messagebox
 
-def reset_game():
-    global win
-    win = False
+class TicTacToe:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Tic Tac Toe")
+        self.current_player = "X"
+        self.board = [""] * 9
+        self.buttons = []
+        self.create_board()
 
-    for col in range(3):
-        for row in range(3):
-            buttons[col][row].config(text="")
+    def create_board(self):
+        for i in range(9):
+            button = tk.Button(self.root, text="", font=('normal', 40), width=5, height=2,
+                               command=lambda i=i: self.on_button_click(i))
+            button.grid(row=i//3, column=i%3)
+            self.buttons.append(button)
 
-    global current_player
-    current_player = "X"
+    def on_button_click(self, index):
+        if self.board[index] == "":
+            self.board[index] = self.current_player
+            self.buttons[index].config(text=self.current_player)
+            if self.check_winner():
+                messagebox.showinfo("Tic Tac Toe", f"Player {self.current_player} wins!")
+                self.reset_board()
+            elif "" not in self.board:
+                messagebox.showinfo("Tic Tac Toe", "It's a tie!")
+                self.reset_board()
+            else:
+                self.current_player = "O" if self.current_player == "X" else "X"
 
-def print_winner():
-    global win
+    def check_winner(self):
+        win_conditions = [(0, 1, 2), (3, 4, 5), (6, 7, 8),
+                          (0, 3, 6), (1, 4, 7), (2, 5, 8),
+                          (0, 4, 8), (2, 4, 6)]
+        for a, b, c in win_conditions:
+            if self.board[a] == self.board[b] == self.board[c] != "":
+                return True
+        return False
 
-    if win is False:
-        win = True
-        print(f"{current_player} Winner")
-        reset_button = tk.Button(root, text="Reset", font=("Arial", 50),relief="groove", width=5, height=1, command=reset_game)
-        reset_button.grid(row=3, column=1)
+    def reset_board(self):
+        self.board = [""] * 9
+        for button in self.buttons:
+            button.config(text="")
+        self.current_player = "X"
 
-
-
-def switch_player():
-    global current_player
-    if current_player == "X":
-        current_player = "O"
-    else:
-        current_player = "X"
-
-def check_tie():
-    for col in range(3):
-        for row in range(3):
-            if buttons[col][row]["text"] == "":
-                return False
-    return True
-
-def check_winner(clicked_row, clicked_col):
-    # Check column
-    count = 0
-    for row in range(3):
-        if buttons[clicked_col][row]["text"] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    # Check row
-    count = 0
-    for col in range(3):
-        if buttons[col][clicked_row]["text"] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    # Check diagonal
-    count = 0
-    for i in range(3):
-        if buttons[i][i]["text"] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    count = 0
-    for i in range(3):
-        if buttons[i][2-i]["text"] == current_player:
-            count += 1
-    if count == 3:
-        print_winner()
-
-    if win is False and check_tie():
-        print("Tie")
-
-def place_sign(row, col):
-    if buttons[col][row]["text"] == "":
-        clicked_button = buttons[col][row]
-        clicked_button.config(text=current_player)
-
-        check_winner(row, col)
-        check_tie()
-        switch_player()
-
-def draw_grid():
-    for col in range(3):
-        buttons_col = []
-        for row in range(3):
-            button = tk.Button(root, font=("Arial", 50),relief="groove", width=5, height=3, command=lambda r=row, c=col: place_sign(r, c))
-            button.grid(row=row, column=col)
-            buttons_col.append(button)
-        buttons.append(buttons_col)
-
-#Stockages des valeurs des cases
-buttons = []
-current_player = "X"
-win = False
-
-#Creer la fenetre du jeu
-root = tk.Tk()
-
-#Personnalisation de la fenetre
-root.title("Tic Tac Toe")
-root.minsize(500,500)
-
-draw_grid()
-
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    game = TicTacToe(root)
+    root.mainloop()
