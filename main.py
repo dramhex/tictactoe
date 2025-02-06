@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from player import AIPlayer  # Import AIPlayer
 
 class TicTacToe:
     def __init__(self, root):
@@ -9,6 +10,7 @@ class TicTacToe:
         self.board = [""] * 9
         self.buttons = []
         self.create_board()
+        self.ai_player = AIPlayer("AI")  # Initialize AI player
 
     def create_board(self):
         for i in range(9):
@@ -29,6 +31,16 @@ class TicTacToe:
                 self.reset_board()
             else:
                 self.current_player = "O" if self.current_player == "X" else "X"
+                if self.current_player == "O":
+                    self.ai_move()
+
+    def ai_move(self):
+        move = self.ai_player.make_move(self.get_board_matrix())
+        index = move[0] * 3 + move[1]
+        self.on_button_click(index)
+
+    def get_board_matrix(self):
+        return [self.board[i:i+3] for i in range(0, 9, 3)]
 
     def check_winner(self):
         win_conditions = [(0, 1, 2), (3, 4, 5), (6, 7, 8),
