@@ -6,3 +6,7 @@ Simple Tic Tac Toe game with a GUI built using `tkinter`. Play against an AI usi
 1. Run `main.py`:
    ```bash
    python main.py
+
+## Screenshot
+   ![image](https://github.com/user-attachments/assets/cbcf34a1-ac1c-4673-bd87-6dddd577dc22)
+
